@@ -78,7 +78,7 @@ class DQNAgent(nn.Module):
                 next_action = next_qa_values.argmax(-1)
             
             next_q_values = torch.gather(next_qa_values, 1, next_action.unsqueeze(1))
-            target_values = reward.unsqueeze(1) + self.discount * (1 - done.to(torch.int).unsqueeze(1)) * next_q_values
+            target_values = reward.unsqueeze(1) + (1 - done.to(torch.int).unsqueeze(1)) * self.discount  * next_q_values
 
         qa_values = self.critic(obs)
         q_values = torch.gather(qa_values, 1, action.unsqueeze(1))
