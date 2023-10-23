@@ -244,6 +244,7 @@ class SoftActorCritic(nn.Module):
         action_distribution: torch.distributions.Distribution = self.actor(obs)
 
         with torch.no_grad():
+            
             # TODO(student): draw num_actor_samples samples from the action distribution for each batch element
             action = action_distribution.sample((self.num_actor_samples,))
             assert action.shape == (
@@ -252,7 +253,10 @@ class SoftActorCritic(nn.Module):
                 self.action_dim,
             ), action.shape
 
-            q_values = self.critic(obs.unsqueeze(0), action)
+
+            obs = obs.unsqueeze(0)
+            obs = obs.repeat(action.shape[0], 1, 1)
+            q_values = self.critic(obs, action)
 
             assert q_values.shape == (
                 self.num_critic_networks,
